@@ -6,7 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -26,6 +28,9 @@ public class Emoji {
         if (sEmojiMap == null) {
             sEmojiMap = new HashMap<>();
         }
+        if (sEmojiList == null) {
+            sEmojiList = new ArrayList<>();
+        }
 
         String[] unicode = context.getResources().getStringArray(R.array.Unicode);
         TypedArray unicodeDrawableArray = context.getResources().obtainTypedArray(R.array.UnicodeDrawable);
@@ -36,7 +41,9 @@ public class Emoji {
         final int len = unicode.length;
         for (int i = 0; i < len; i++) {
             int drawableId = unicodeDrawableArray.getResourceId(i, R.drawable.ic_2754);
-            sEmojiMap.put(unicode[i], new Emoji(ContextCompat.getDrawable(context, drawableId), unicode[i]));
+            Emoji emoji = new Emoji(ContextCompat.getDrawable(context, drawableId), unicode[i]);
+            sEmojiMap.put(unicode[i], emoji);
+            sEmojiList.add(emoji);
         }
         unicodeDrawableArray.recycle();
 
@@ -55,7 +62,17 @@ public class Emoji {
         return emoji;
     }
 
+    public static List<Emoji> getEmojiList() {
+        if (sEmojiList == null) {
+            throw new IllegalStateException("Emoji not initialized!");
+        }
+
+        return new ArrayList<>(sEmojiList);
+    }
+
     private static HashMap<String, Emoji> sEmojiMap;
+
+    private static List<Emoji> sEmojiList;
 
     private static Emoji sFallback;
 
