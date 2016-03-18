@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/p8"
+    tools:context="emoji.cm.hust.edu.cn.emoji.EmojiActivity">
+
+    <ImageView
+        android:id="@+id/iv_emoji"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="@string/placeholder"
+        android:src="@drawable/ic_2754" />
+</LinearLayout>

@@ -12,12 +12,11 @@
     tools:context="emoji.cm.hust.edu.cn.emoji.EmojiActivity"
     tools:showIn="@layout/activity_emoji">
 
-
     <EditText
         android:id="@+id/emoji"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:editable="false" />
+        android:editable="true" />
 
     <EditText
         android:id="@+id/emoji_edit"
@@ -25,12 +24,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/emoji" />
 
-    <GridView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/emoji_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/emoji_edit"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <ImageButton
         android:id="@+id/emoji_demo"
@@ -39,7 +38,8 @@
         android:layout_below="@id/emoji_grid"
         android:background="@null"
         android:src="@drawable/ic_1f601"
-        android:text="害羞" />
+        android:text="害羞"
+        android:visibility="gone" />
 
     <ImageButton
         android:id="@+id/emoji_demo2"
@@ -49,7 +49,8 @@
         android:layout_toRightOf="@id/emoji_demo"
         android:background="@null"
         android:src="@drawable/ic_1f602"
-        android:text="得意" />
+        android:text="得意"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/emoji_demo3"

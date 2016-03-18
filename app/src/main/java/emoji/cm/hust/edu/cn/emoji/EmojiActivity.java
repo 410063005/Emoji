@@ -2,15 +2,15 @@ package emoji.cm.hust.edu.cn.emoji;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,8 +18,9 @@ import java.util.regex.Pattern;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
-public class EmojiActivity extends AppCompatActivity {
+public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.ViewHolderOnClickListener {
 
     /**
      * display emoji in this EditText
@@ -32,7 +33,9 @@ public class EmojiActivity extends AppCompatActivity {
     @Bind(R.id.emoji_edit)
     EditText emojiEdit;
     @Bind(R.id.emoji_grid)
-    GridView emojiGrid;
+    RecyclerView emojiGrid;
+
+    EmojiAdapter emojiAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +48,24 @@ public class EmojiActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                int visibility = emojiGrid.getVisibility();
+                if (visibility == View.VISIBLE) {
+                    emojiGrid.setVisibility(View.GONE);
+                } else {
+                    emojiGrid.setVisibility(View.VISIBLE);
+                }
             }
         });
 
         ButterKnife.bind(this);
 
         Emoji.init(this);
+
+        emojiGrid.setLayoutManager(new GridLayoutManager(this, 7));
+        emojiAdapter = new EmojiAdapter(this, R.layout.item_emoji, this);
+        emojiGrid.setAdapter(emojiAdapter);
+        emojiAdapter.addAll(Emoji.getEmojiList());
+        emojiAdapter.notifyDataSetChanged();
     }
 
     @OnClick({R.id.emoji_demo, R.id.emoji_demo2})
@@ -73,7 +86,7 @@ public class EmojiActivity extends AppCompatActivity {
 
             displayEmoji(spanned);
         } else {
-            // TODO
+            Timber.w("No selection?");
         }
     }
 
@@ -109,6 +122,27 @@ public class EmojiActivity extends AppCompatActivity {
 
             default:
                 return Emoji.getEmojiByTag(null);
+        }
+    }
+
+    @Override
+    public void onItemClick(View view, int pos) {
+        Emoji emoji = emojiAdapter.get(pos);
+
+        final EditText edit = emojiEdit;
+        if (edit.getSelectionStart() != -1) {
+            String text = edit.getText().toString();
+            int start = 0;
+            int end = text.length();
+            int mid = edit.getSelectionStart(); // 记住插入表情的位置
+
+            SpannableString spanned = new SpannableString(text.substring(start, mid) + emoji.chars + text.substring(mid, end));
+            edit.setText(spanned);
+            edit.setSelection(mid + emoji.chars.length()); // 插入的表情后光标移到表情字符之后
+
+            displayEmoji(spanned);
+        } else {
+            Timber.w("No selection?");
         }
     }
 }
