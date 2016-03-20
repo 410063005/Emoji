@@ -20,11 +20,12 @@ import butterknife.OnClick;
  */
 public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
 
+    private static final int TAG_ID = R.id.ll_root;
+
     private Context context;
     private int resId;
     private ArrayList<Emoji> emojiList;
     private ViewHolderOnClickListener onClickListener;
-
 
     public EmojiAdapter(Context context, int resId, ViewHolderOnClickListener onClickListener) {
         this.context = context;
@@ -60,7 +61,7 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Emoji emoji = emojiList.get(position);
         holder.ivEmoji.setImageDrawable(emoji.drawable);
-        holder.llRoot.setTag(R.id.ll_root, emoji.chars);
+        holder.llRoot.setTag(TAG_ID, emoji.chars);
     }
 
     @Override
@@ -86,12 +87,12 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
         @OnClick(R.id.ll_root)
         public void onClick(View view) {
             if (onClickListener != null) {
-                onClickListener.onItemClick(view, getAdapterPosition());
+                onClickListener.onItemClick(view, Emoji.getEmojiByTag((String) view.getTag(TAG_ID)));
             }
         }
     }
 
     public interface ViewHolderOnClickListener {
-        void onItemClick(View view, int pos);
+        void onItemClick(View view, Emoji emoji);
     }
 }

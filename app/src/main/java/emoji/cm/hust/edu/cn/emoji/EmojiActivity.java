@@ -2,8 +2,10 @@ package emoji.cm.hust.edu.cn.emoji;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -20,7 +22,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.ViewHolderOnClickListener {
+public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.ViewHolderOnClickListener,
+    EmojiFragment.OnFragmentInteractionListener {
 
     /**
      * display emoji in this EditText
@@ -34,6 +37,9 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
     EditText emojiEdit;
     @Bind(R.id.emoji_grid)
     RecyclerView emojiGrid;
+
+    @Bind(R.id.pager)
+    ViewPager viewPager;
 
     EmojiAdapter emojiAdapter;
 
@@ -61,11 +67,23 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
 
         Emoji.init(this);
 
-        emojiGrid.setLayoutManager(new GridLayoutManager(this, 7));
-        emojiAdapter = new EmojiAdapter(this, R.layout.item_emoji, this);
-        emojiGrid.setAdapter(emojiAdapter);
-        emojiAdapter.addAll(Emoji.getEmojiList());
-        emojiAdapter.notifyDataSetChanged();
+//        mEmojiGrid.setLayoutManager(new GridLayoutManager(this, 7));
+//        emojiAdapter = new EmojiAdapter(this, R.layout.item_emoji, this);
+//        mEmojiGrid.setAdapter(emojiAdapter);
+//        emojiAdapter.addAll(Emoji.getEmojiList());
+//        emojiAdapter.notifyDataSetChanged();
+
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return EmojiFragment.newInstance(position, 28);
+            }
+
+            @Override
+            public int getCount() {
+                return (int) (Emoji.getEmojiList().size() / 28 + 0.5);
+            }
+        });
     }
 
     @OnClick({R.id.emoji_demo, R.id.emoji_demo2})
@@ -126,9 +144,7 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
     }
 
     @Override
-    public void onItemClick(View view, int pos) {
-        Emoji emoji = emojiAdapter.get(pos);
-
+    public void onItemClick(View view, Emoji emoji) {
         final EditText edit = emojiEdit;
         if (edit.getSelectionStart() != -1) {
             String text = edit.getText().toString();
