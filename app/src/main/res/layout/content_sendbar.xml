@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/send_bar_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/send_bar_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/send_bar_emoji" />
+
+        <CheckBox
+            android:id="@+id/send_bar_emoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/p4"
+            android:layout_toLeftOf="@+id/send_bar_send"
+            android:background="@drawable/send_bar_bg"
+            android:button="@null" />
+
+        <TextView
+            android:id="@+id/send_bar_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_bg"
+            android:clickable="true"
+            android:padding="@dimen/p8"
+            android:text="@string/send"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small" />
+    </RelativeLayout>
+</LinearLayout>

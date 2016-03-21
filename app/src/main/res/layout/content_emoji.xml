@@ -18,52 +18,9 @@
         android:layout_height="wrap_content"
         android:editable="true" />
 
-    <EditText
-        android:id="@+id/emoji_edit"
+    <include
+        layout="@layout/content_sendbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/emoji" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/emoji_grid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emoji_edit"
-        android:visibility="gone" />
-
-    <ImageButton
-        android:id="@+id/emoji_demo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emoji_grid"
-        android:background="@null"
-        android:src="@drawable/ic_1f601"
-        android:text="害羞"
-        android:visibility="gone" />
-
-    <ImageButton
-        android:id="@+id/emoji_demo2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emoji_grid"
-        android:layout_toRightOf="@id/emoji_demo"
-        android:background="@null"
-        android:src="@drawable/ic_1f602"
-        android:text="得意"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/emoji_demo3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emoji_grid"
-        android:layout_toRightOf="@id/emoji_demo2"
-        android:text="demo3"
-        android:visibility="gone" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/emoji_edit" />
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

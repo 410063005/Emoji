@@ -3,10 +3,7 @@ package emoji.cm.hust.edu.cn.emoji;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -23,7 +20,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.ViewHolderOnClickListener,
-    EmojiFragment.OnFragmentInteractionListener {
+        EmojiFragment.OnFragmentInteractionListener {
 
     /**
      * display emoji in this EditText
@@ -33,15 +30,8 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
     /**
      * display chars in this EditText
      */
-    @Bind(R.id.emoji_edit)
+    @Bind(R.id.send_bar_text)
     EditText emojiEdit;
-    @Bind(R.id.emoji_grid)
-    RecyclerView emojiGrid;
-
-    @Bind(R.id.pager)
-    ViewPager viewPager;
-
-    EmojiAdapter emojiAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,62 +40,12 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int visibility = emojiGrid.getVisibility();
-                if (visibility == View.VISIBLE) {
-                    emojiGrid.setVisibility(View.GONE);
-                } else {
-                    emojiGrid.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
 
         ButterKnife.bind(this);
 
         Emoji.init(this);
-
-//        mEmojiGrid.setLayoutManager(new GridLayoutManager(this, 7));
-//        emojiAdapter = new EmojiAdapter(this, R.layout.item_emoji, this);
-//        mEmojiGrid.setAdapter(emojiAdapter);
-//        emojiAdapter.addAll(Emoji.getEmojiList());
-//        emojiAdapter.notifyDataSetChanged();
-
-        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return EmojiFragment.newInstance(position, 28);
-            }
-
-            @Override
-            public int getCount() {
-                return (int) (Emoji.getEmojiList().size() / 28 + 0.5);
-            }
-        });
-    }
-
-    @OnClick({R.id.emoji_demo, R.id.emoji_demo2})
-    public void onClick(View view) {
-        final EditText edit = emojiEdit;
-
-        Emoji emoji = getEmojiFromView(view);
-
-        if (edit.getSelectionStart() != -1) {
-            String text = edit.getText().toString();
-            int start = 0;
-            int end = text.length();
-            int mid = edit.getSelectionStart(); // 记住插入表情的位置
-
-            SpannableString spanned = new SpannableString(text.substring(start, mid) + emoji.chars + text.substring(mid, end));
-            edit.setText(spanned);
-            edit.setSelection(mid + emoji.chars.length()); // 插入的表情后光标移到表情字符之后
-
-            displayEmoji(spanned);
-        } else {
-            Timber.w("No selection?");
-        }
     }
 
     private void displayEmoji(SpannableString spanned) {
@@ -130,19 +70,6 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
         emoji.setText(spanned);
     }
 
-    private Emoji getEmojiFromView(View view) {
-        switch (view.getId()) {
-            case R.id.emoji_demo:
-                return Emoji.getEmojiByTag("\\:1F601");
-
-            case R.id.emoji_demo2:
-                return Emoji.getEmojiByTag("\\:1F602");
-
-            default:
-                return Emoji.getEmojiByTag(null);
-        }
-    }
-
     @Override
     public void onItemClick(View view, Emoji emoji) {
         final EditText edit = emojiEdit;
@@ -159,6 +86,17 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
             displayEmoji(spanned);
         } else {
             Timber.w("No selection?");
+        }
+    }
+
+    @OnClick(R.id.send_bar_emoji)
+    public void onOpenEmojiContainer(View view) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("emoji_root");
+        if (fragment == null) {
+            fragment = EmojiFragmentContainer.newInstance();
+            getSupportFragmentManager().beginTransaction().add(R.id.send_bar_root, fragment, "emoji_root").commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
 }
