@@ -5,10 +5,15 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
@@ -48,6 +53,33 @@ public class Emoji {
         unicodeDrawableArray.recycle();
 
         sFallback = sEmojiMap.get("\\\\:2754");
+    }
+
+    public static void setEmoji(Spannable spannable) {
+        int textLength = spannable.length();
+        ImageSpan[] imageSpans = spannable.getSpans(0, textLength, ImageSpan.class);
+        for (ImageSpan is : imageSpans) {
+            spannable.removeSpan(is);
+        }
+
+        Pattern p = Pattern.compile("(\\\\:[0-9a-fA-F]{4,5}).*?");
+        Matcher m = p.matcher(spannable);
+        int start = 0;
+        while (m.find(start)) {
+            start = m.start() + 1;
+
+            int from = m.start();
+            int to = m.end();
+            String matched = m.group(1);
+
+            Emoji emoji = Emoji.getEmojiByTag(matched);
+            if (emoji == null) {
+                continue;
+            }
+
+            ImageSpan span = new ImageSpan(emoji.drawable, "");
+            spannable.setSpan(span, from, to, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
     }
 
     public static Emoji getEmojiByTag(@Nullable String tag) {

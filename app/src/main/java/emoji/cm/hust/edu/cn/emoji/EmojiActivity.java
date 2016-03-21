@@ -5,14 +5,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.EditText;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,28 +42,6 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
         Emoji.init(this);
     }
 
-    private void displayEmoji(SpannableString spanned) {
-        Pattern p = Pattern.compile("(\\\\:[0-9a-fA-F]{4,5}).*?");
-        Matcher m = p.matcher(spanned);
-        int start = 0;
-        while (m.find(start)) {
-            start = m.start() + 1;
-
-            int from = m.start();
-            int to = m.end();
-            String matched = m.group(1);
-
-            Emoji emoji = Emoji.getEmojiByTag(matched);
-            if (emoji == null) {
-                continue;
-            }
-
-            ImageSpan span = new ImageSpan(emoji.drawable, "");
-            spanned.setSpan(span, from, to, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        }
-        emoji.setText(spanned);
-    }
-
     @Override
     public void onItemClick(View view, Emoji emoji) {
         final EditText edit = emojiEdit;
@@ -79,11 +51,12 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
             int end = text.length();
             int mid = edit.getSelectionStart(); // 记住插入表情的位置
 
-            SpannableString spanned = new SpannableString(text.substring(start, mid) + emoji.chars + text.substring(mid, end));
-            edit.setText(spanned);
-            edit.setSelection(mid + emoji.chars.length()); // 插入的表情后光标移到表情字符之后
+            StringBuilder sb = new StringBuilder(text.substring(start, mid));
+            sb.append(emoji.chars);
+            sb.append(text.substring(mid, end));
 
-            displayEmoji(spanned);
+            edit.setText(sb);
+            edit.setSelection(mid + emoji.chars.length()); // 插入的表情后光标移到表情字符之后
         } else {
             Timber.w("No selection?");
         }
