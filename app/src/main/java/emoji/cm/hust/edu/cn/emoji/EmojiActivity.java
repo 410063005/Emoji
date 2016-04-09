@@ -5,9 +5,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,13 +28,19 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
     /**
      * display emoji in this EditText
      */
-    @Bind(R.id.emoji)
-    EditText emoji;
+//    @Bind(R.id.emoji)
+//    EditText emoji;
+
+    @Bind(R.id.chat_list)
+    ListView chatList;
+
     /**
      * display chars in this EditText
      */
     @Bind(R.id.send_bar_text)
     EditText emojiEdit;
+
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +53,17 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
         fab.setVisibility(View.GONE);
 
         ButterKnife.bind(this);
+
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item_1, new ArrayList()) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                EditText textView = (EditText) view;
+                Emoji.setEmoji(textView.getText());
+                return view;
+            }
+        };
+        chatList.setAdapter(adapter);
     }
 
     @Override
@@ -74,6 +99,15 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
     @OnClick(R.id.send_bar_text)
     public void onClickEmojiEdit(View view) {
         showSoftInput(view);
+    }
+
+    @OnClick(R.id.send_bar_send)
+    public void onSend(View view) {
+        String msg = emojiEdit.getText().toString();
+        adapter.add(msg);
+
+        emojiEdit.setText(null);
+        chatList.smoothScrollToPosition(adapter.getCount());
     }
 
     private void hideSoftInput(View view) {

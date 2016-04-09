@@ -12,15 +12,16 @@
     tools:context="emoji.cm.hust.edu.cn.emoji.EmojiActivity"
     tools:showIn="@layout/activity_emoji">
 
-    <EditText
-        android:id="@+id/emoji"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:editable="true" />
-
     <include
+        android:id="@+id/send_bar_root"
         layout="@layout/content_sendbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
+
+    <ListView
+        android:id="@+id/chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/send_bar_root" />
 </RelativeLayout>
