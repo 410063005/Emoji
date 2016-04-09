@@ -38,8 +38,6 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
         fab.setVisibility(View.GONE);
 
         ButterKnife.bind(this);
-
-        Emoji.init(this);
     }
 
     @Override

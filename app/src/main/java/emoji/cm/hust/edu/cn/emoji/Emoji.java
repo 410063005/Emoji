@@ -29,6 +29,9 @@ public class Emoji {
         this.chars = chars;
     }
 
+    /**
+     * Init Emoji. Caution: SHOULD BE CALLED ONLY ONCE!
+     */
     public static void init(Context context) {
         if (sEmojiMap == null) {
             sEmojiMap = new HashMap<>();
