@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import butterknife.Bind;
@@ -64,9 +65,34 @@ public class EmojiActivity extends AppCompatActivity implements EmojiAdapter.Vie
     public void onOpenEmojiContainer(View view) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("emoji_root");
         if (fragment == null) {
+            hideSoftInput(view);
+        } else {
+            showSoftInput(view);
+        }
+    }
+
+    @OnClick(R.id.send_bar_text)
+    public void onClickEmojiEdit(View view) {
+        showSoftInput(view);
+    }
+
+    private void hideSoftInput(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("emoji_root");
+        if (fragment == null) {
             fragment = EmojiFragmentContainer.newInstance();
             getSupportFragmentManager().beginTransaction().add(R.id.send_bar_root, fragment, "emoji_root").commit();
-        } else {
+        }
+    }
+
+    private void showSoftInput(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(emojiEdit, 0);
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("emoji_root");
+        if (fragment != null) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
